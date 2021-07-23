@@ -128,67 +128,89 @@
 \section*{Notes}
 
 Book acknowledgment:
+\begin{itemize}
+	\item[] ``Linear Programming and Network Flows" by Bazaraa, Jarvis, and Sherali. \emph{Fourth Edition}
+\end{itemize}
 \section*{Goals}
 \begin{itemize}
-\item  Learn (or remember) new notation
+\item  Introduce (or re-introduce) network/graph notation
 \end{itemize}
 
 \section{Undirected Graphs}
 
-Let $G = (V,E)$ be an \textbf{undirected graph} in which $V$ is a finite set of nodes (or vertices) and $E$ is a collection of unordered pairs (edges) of elements of $V$.
-
-We will typically let	
+Let $G = (V,E)$ be an \textbf{undirected graph}.
 \begin{itemize}
-	\item $n:= |V|$
-	\item $m:=|E|$
+	\item[] $V$ is a finite set of nodes (or vertices) with $n:= |V|$.
+	\item[] $E$ is a collection of unordered pairs (edges) of elements of $V$ with $m:=|E|$.
+\end{itemize}
+ 
+\subsection*{Attributes}
+
+\begin{itemize}
+	\item $G$ has \emph{weights} on edges and/or nodes. 
+	\begin{itemize}
+		\item For edges, $c_{ij}, \ \forall (i,j) \in E$. 
+		\item For nodes, $w_i, \ \forall i \in V$.
+	\end{itemize}
+	\item Let $V= \{1,2, \dots, n\}$.
+	\item Let the edges in $E$ have the form $(i,j), \forall i,j \in V$
+	\begin{itemize}
+		\item For the sake of simplicity, we assume that edges $(i,j)$ and $(j,i)$ are equivalent. Thus, we assume that $E$ only consists of edges $(i,j)$ for which $i<j$.
+	\end{itemize}
+	\item Two nodes $i$ and $j$ are said to be \emph{adjacent} when there exists an edge $(i,j)$ that connects them. 
+	\item Two edges are referred to as \emph{adjacent} if they have an edge in common.
+	\item The number of edges incident on a vertex $v$ is called the \emph{degree} of the vertex, and is usually denoted by $d_G(v)$. 
+	\item Graph $G$ is \emph{complete}  if it contains all possible edges. (When $E = \{(i,j): i,j \in V, i < j\}$. 
+	\item Graph $G' = (V', E')$ is a \emph{subgraph} of $G$ if $V' \subseteq V$ and $E' \subseteq E$. Additionally, for $G'$ to be a subgraph of $G$, then for all edges $(i,j) \in E'$, then both vertices $i$ and $j$ must belong to $V'$.
+	\item A \emph{path} in $G$ is a sequence of consecutive edges $e_1, e_2, \dots, e_k \in E$, in which $e_1 = (v_1, v_2), \ e_2 = (v_2, v_3), \dots, e_k = (v_k, v_{k+1})$. The path connects $v_1$ and $v_{k+1}$, visiting the intermediate vertices $v_2, \ v_3, \dots, v_k$. 
+	\begin{itemize}
+		\item The path is a \emph{cycle} if $v_1 = v_{k+1}$. 
+		\item A path is \emph{elementary} if no edge is used twice.
+		\item The path is referred to as \emph{simple} if no node is visited twice.
+		\item An elementary path is defined as an \emph{Eulerian} path if it visits every edge in $E$ once and only once. 
+		\item A simple path is said to be \emph{Hamiltonian} if it visits every vertex in $V$ once and only once.
+	\end{itemize}
+	\item Vertex $v$ is \emph{connected} to vertex $w$ if there exists a path connecting them. 
+	\item A graph $G$ is referred to as \emph{connected} if all vertices $v$ and $w$ in $V$ are connected.
+	\item  A \emph{cut} in $G$ is a set of edges of the type:
+		\begin{align*}
+			\gamma_G(S):= \{(i,j) \in E: |S \cap \{i,j\} | = 1\}
+		\end{align*}
+	in which $S$ is the subset of vertices that induces the cut (i.e., the cut contains all edges with one endpoint in $S$ and the other in $V \setminus S$. 
+	%\item One can easily verify that $G$ is connected if and only if $\gamma(S) \ne \emptyset$ for all $\emptyset \subset S \subset V$. Given two vertices $s$ and $t$, there exist $k$ edge-disjoint paths connecting them if and only if $|\gamma(S)| \ge k$ for all $S \subset V$ such that $s \in S$, $t \notin S$.
+	\item A partial graph $G' = (V, E'$ of $G$ is called a \emph{forest} if it is \emph{acyclic}--it does not contain a cycle. 
+	\begin{itemize}
+		\item A forest is \emph{maximal} if every edge in $E \setminus E'$ forms a cycle with the edges in $E'$. Therefore, $G'$ and $G$ have the same connected components. 
+	\end{itemize}
+	\item A maximal connected forest, if it exists, is called a \emph{spanning tree}. Every tree has exactly $|V| - 1$ edges. Graph $G$ contains a tree if and only if $G$ is connected. 
+	\item A graph is said to be \emph{bipartite} if there exists a partition $(V_1, V_2)$ of $V$ such that each e3dge $(i,j) \in E$ connects a vertex $i \in V_1$ to a vertex $j \in V_2$. 
+	\begin{itemize}
+		\item Graph $G$ is bipartite if and only if it does not contain any cycles visiting an odd number of vertices.
+	\end{itemize}
+	\item A \emph{clique} is a subgraph $G' = (V',E')$ of $G$ in which every pair of vertices in $V'$ is connected by an edge.
+	\item A \emph{stable} set of $G$ is a subgraph $G' = (V', E')$ induced by $V'$ such that $E' = \emptyset$. 
 \end{itemize}
 
-\textbf{Examples?}
 
-In some cases, $G$ has \emph{weights} on edges and/or nodes. For edges, $c_{ij}, \ \forall (i,j) \in E$. For nodes, $w_i, \ \forall i \in V$.
 
-We will let $V= \{1,2, \dots, n\}$ and the edges in $E$ have the form $(i,j), \ forall i,j \in V$. For the sake of simplicity, we assume that edges $(i,j)$ and $(j,i)$ are equivalent. Thus, we assume that $E$ only consists of edges $(i,j)$ for which $i<j$.
 
-Two nodes $i$ and $j$ are said to be \emph{adjacent} when there exists an edge $(i,j)$ that connects them. Two edges are referred to as \emph{adjacent} if they have an edge in common.
-
-The number of edges incident on a vertex $v$ is called the degree of the vertex, and is usually denoted by $d_G(v)$. 
-
-Graph $G$ is \emph{complete}  if it contains all possible edges. (When $E = \{(i,j): i,j \in V, i < j\}$. 
-
-Graph $G' = (V', E')$ is a \emph{subgraph} of $G$ if $V' \subseteq V$ and $E' \subseteq E$. Additionally, for $G'$ to be a subgraph of $G$, then for all edges $(i,j) \in E'$, then both vertices $i$ and $j$ must belong to $V'$.
-
-A \emph{path} in $G$ is a sequence of consecutive edges $e_1, e_2, \dots, e_k \in E$, in which $e_1 = (v_1, v_2), \ e_2 = (v_2, v_3), \dots, e_k = (v_k, v_{k+1})$. The path connects $v_1$ and $v_{k+1}$, visiting the intermediate vertices $v_2, \ v_3, \dots, v_k$. The path is a \emph{cycle} if $v_1 = v_{k+1}$. A path is \emph{elementary} if no edge is used twice, and the path is referred to as \emph{simple} if no node is visited twice. 
-
-Vertex $v$ is \emph{connected} to vertex $w$ if there exists a path connecting them. In undirected graphs, this definition is symmetrical. If $v$ is connected to $w$, then $w$ is also connected to $v$. A graph $G$ is referred to as \emph{connected} if all vertices $v$ and $w$ in $V$ are connected.
-
-A \emph{cut} in $G$ is a set of edges of the type:
-\begin{align*}
-\gamma_G(S):= \{(i,j) \in E: |S \cap \{i,j\} | = 1\}
-\end{align*}
-
-in which $S$ is the subset of vertices that induces the cute (i.e., the cut contains all ecdges with one endpoint in $S$ and the other in $V \setminus S$. 
-
-When can easily verify that $G$ is connected if and only if $\gamma(S) \ne \emptyset$ for all $\emptyset \subset S \subset V$. Given two vertices $s$ and $t$, there exist $k$ edge-disjoint paths connecting them if and only if $|\gamma(S)| \ge k$ for all $S \subset V$ such that $s \in S$, $t \notin S$.
-
-A partial graph $G' = (V, E'$ of $G$ is called a \emph{forest} if it is \emph{acyclic}--it does not contain a cycle. A forest is \emph{maximal} if every edge in $E \setminus E'$ forms a cycle with the edges in $E'$. Therefore, $G'$ and $G$ have the same connected components. 
-
-A maximal connected forest, if it exists, is called a \emph{spanning tree}. Every tree has exactly $|V| - 1$ edges. Graph $G$ contains a tree if and only if $G$ is connected. 
-
-A graph is said to be \emph{bipartite} if there exists a partition $(V_1, V_2)$ of $V$ such that each e3dge $(i,j) \in E$ connects a vertex $i \in V_1$ to a vertex $j \in V_2$. Graph $G$ is bipartite if and only if it does not contain any cycles visiting an odd number of vertices.
-
-An elementary path is defined as an \emph{Eulerian} path if it visits every edge in $E$ once and only once. 
-
-A simple path is said to be \emph{Hamiltonian} if it visits every vertex in $V$ once and only once.
-
-A \emph{clique} is a subgraph $G' = (V',E')$ of $G$ in which every pair of vertices in $V'$ is connected by an edge.
-
-A \emph{stable} set of $G$ is a subgraph $G' = (V', E')$ induced by $V'$ such that $E' = \emptyset$. 
 
 \section{Directed Graphs}
+A \emph{directed graph} is a pair $G = (V, A)$.
 
-A \emph{directed graph} is a pair $G = (V, A)$ in which $V$ is a finite set of vertices and $A$ is a family of \emph{arcs} $(i,j) \in A$. The order in which the nodes $i$ and $j$ appear is relevant; thus, $(i,j) \ne (j,i)$. In this case, we say that arc $(i,j)$ leaves node $i$ and enters node $j$. Nodes $i$ and $j$ are often referred to as the out-going and in-coming nodes, respectively. 
+\begin{itemize}
+	\item $V$ is a finite set of vertices.
+	\item $A$ is a family of \emph{arcs} $(i,j) \in A$.
+	\item The order in which the nodes $i$ and $j$ appear is relevant; thus, $(i,j) \ne (j,i)$. 
+	\begin{itemize}
+		\item In this case, we say that arc $(i,j)$ leaves node $i$ and enters node $j$.
+		\item Nodes $i$ and $j$ are often referred to as the out-going and in-coming nodes, respectively. 
+	\end{itemize}
+	\item A \emph{directed path} is a sequences of arcs $a_1, a_2, \dots, a_k$ of consecutive arcs of the type $a_1 = (v_1, v_2), \ (v_2,v_3), \dots, (v_k, v_{k+1}$. 
+\end{itemize}
 
-Similar to a general path, a \emph{directed path} is a sequences of arcs $a_1, a_2, \dots, a_k$ of consecutive arcs of the type $a_1 = (v_1, v_2), \ (v_2,v_3), \dots, (v_k, v_{k+1}$. 
+
+
 
 
 
