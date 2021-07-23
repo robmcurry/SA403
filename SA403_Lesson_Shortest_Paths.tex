@@ -9,6 +9,8 @@
 \usepackage{tikz-3dplot}
 \usepackage{amssymb}
 \usepackage{multicol}
+\usepackage{algorithm}
+\usepackage{algorithmic}
 \usepackage{float}
 \usepackage{calc}
 \usepackage{fancybox}
@@ -130,13 +132,20 @@
 Book acknowledgment:
 \section*{Goals}
 \begin{itemize}
-\item Shortest path 
+	\item Learn the Shortest Path Problem
+	\item Learn and implement the following algorithms:
+	\begin{itemize}
+		\item Dijkstra's Algorithm
+		\item Bellman-Ford Algorithm
+	\end{itemize}
 \end{itemize}
 
 
 
 
 \section{Try it on your own}
+
+Assume that you are starting at node $1$, and the label on each arc is the number of dollars required to use that arc. What's the minimum cost required to move from node $1$ to node $5$ moving from one node to another using the arcs in the network?
 
 \begin{center}
 \includegraphics[width=5cm]{shortestpathexample1}
@@ -146,8 +155,15 @@ Book acknowledgment:
 
 \item Determine a shortest path from 1 to 5.
 \vfill
+
+%The shortest path is from 1 to 2 to 5, and the total cost is 23 dollars.
+
 \item Determine a shortest path from 1 to every other node.
 \vfill
+
+%The 1-2 shortest path is from 1 to 2 with a total cost of 10 dollars.
+%The 1-3 shortest path is from 1 to 3 with a total cost of 15 dollars.
+%The 1-4 shortest path is from 1 to 2 to 4 with a total cost of 22 dollars.
 
 \newpage
 \begin{center}
@@ -156,8 +172,17 @@ Book acknowledgment:
 
 \item Determine a shortest path from 1 to 8.
 \vfill
+%The shortest path is from 1-3-4-7-8, and the total cost is 26 dollars.
+
 \item Determine a shortest path from 1 to every other node.
 \vfill
+
+%The 1-2 shortest path is from 1-2, and the total cost is 10 dollars.
+%The 1-3 shortest path is from 1-3, and the total cost is 10 dollars.
+%The 1-4 shortest path is from 1-3-4, and the total cost is 13 dollars.
+%The 1-5 shortest path is from 1-2-5, and the total cost is 14 dollars.
+%The 1-6 shortest path is from 1-2-5-6, and the total cost is 20 dollars.
+%The 1-7 shortest path is from 1-3-4-7, and the total cost is 17 dollars.
 
 
 \end{enumerate}
@@ -181,27 +206,48 @@ How would you go about solving this on your own? (Given what you already know fr
 
 \section{Dijkstra's Algorithm}
 
-Dijkstra's algorithm is very similar to Prim's Algorithm in that we will keep track of which nodes are and are not included in a shortest path from $s$ to $t$. In doing so, we will actually build a shortest-path tree rooted at the source node $s$.
+\begin{itemize}
+	\item Dijkstra's algorithm is very similar to Prim's Algorithm in that we will keep track of which nodes are and are not included in a shortest path from $s$ to $t$, so far.  
+	\item In doing so, we will actually build a shortest-path tree rooted at the source node $s$.
+	\item At each step of the algorithm, we will search for a node not yet in the shortest-path tree having a minimum distance from the source.
+\end{itemize}
 
-At each step of the algorithm, we will search for a node not yet in the shortest-path tree having a minimum distance from the source.
 
 \vfill
 
 \newpage
 
-\textbf{Steps:}
+\emph{\textbf{Written Steps:}}
 \begin{enumerate}
-	\item Initialize set $S = \emptyset$ that contains all the nodes currently in the shortest-path tree. If a node $i \in V$ is in the shortest-path tree, then we have successfully determined a shortest path from $s$ to $i$.
-
-	\item Assign a minimum distance value $v_i$ to each node $i \in V$ in the graph. Initialize $v_i = \infty, \ \forall i \in V$. Set $v_s = 0$.
-
-	\item While $S \subset V$:
-	\begin{enumerate}
-		\item Pick a node $u \in V \setminus S$ having a minimum distance value $v_u = \textrm{min} \{v_i: i \in V\setminus S\}$.
-		\item Add $u$ to $S$. 
-		\item Update the distance value for each adjacent node of $u$. For all $(u,w) \in A$, if $v_w > v_u + c_{uw}$, then set $v_w = v_u + c_{uw}$. 
-	\end{enumerate}
+	\item Initialize set $S = \emptyset$ that contains all the nodes currently in the shortest-path tree. Assign a minimum distance value $v_i$ to each node $i \in V$ in the graph. Initialize $v_i = \infty, \ \forall i \in V$, and set $v_s = 0$.  Proceed to Step \ref{Step3}. \label{Step1}
+	\item If $S = V$, then proceed to Step \ref{Step5}. Otherwise, pick a node $u \in V \setminus S$ having a minimum distance value $v_u = \textrm{min} \{v_i: i \in V\setminus S$, add $u$ to $S$, and proceed to Step \ref{Step4}. \label{Step3}
+	\item Update the distance value for each adjacent node of $u$. For all $(u,w) \in A$, if $v_w > v_u + c_{uw}$, then set $v_w = v_u + c_{uw}$ and set the parent of $w$ to be $u$. Return to Step \ref{Step3}. \label{Step4}
+	\item Terminate with the shortest-path tree $S$. \label{Step5}
 \end{enumerate}
+
+
+\emph{\textbf{Pseudocode:}}
+
+
+\begin{algorithm}
+\caption{Determine a shortest-path tree rooted at source node $s$}
+\begin{algorithmic} 
+\STATE Let $S = \emptyset$ be the set of shortest-path tree nodes.
+\STATE Set $v_i = \infty, \ \forall i \in V$
+\STATE Set $v_s = 0$.
+\WHILE{$S \subset V$:}
+	\STATE Pick a node $u \in V \setminus S$ for which $v_u = \textrm{min} \{v_i: i \in V\setminus S\}$.
+	\STATE Add $u$ to $S$.
+	\FOR{$(u,w) \in A$}
+		\IF{$v_w > v_u + c_{uw}$,}
+			\STATE Set $v_w = v_u + c_{uw}$
+			\STATE Set $parent(w) = u$
+		\ENDIF
+	\ENDFOR
+
+\ENDWHILE
+\end{algorithmic}
+\end{algorithm}
 
 \newpage
 
@@ -244,21 +290,41 @@ Use Dijkstra's Algorithm to determine the shortest path from $s$ to every other 
 \section{Bellman-Ford Algorithm}
 
 
-The Bellman-Ford Algorithm is slightly slower than Dijkstra's Algorithm but more versatile because it is capable of handling graphs having negative arc costs. If a graph/network has a negative-cost cycle, then the Bellman-Ford Algorithm is able to detect and report it.
+In the worst-case, the Bellman-Ford Algorithm is slightly slower than Dijkstra's Algorithm. Alternatively, it is more versatile because it is capable of handling graphs having negative arc costs. If a graph/network has a negative-cost cycle, then the Bellman-Ford Algorithm is able to detect and report it.
 
-Like Dijkstra's Algorithm, the Bellman-Ford iteratively updates approximations to the minimum computed distance to each node in the network. Whereas Dijkstra's uses a greedy apporach that selects the \emph{closest} node that has not yet been added to the shortest-path tree set $S$, Bellman-Ford updates all edges at most $|V| - 1$ times. 
+Like Dijkstra's Algorithm, the Bellman-Ford iteratively updates approximations to the minimum computed distance to each node in the network. Whereas Dijkstra's uses a greedy approach that selects the \emph{closest} node that has not yet been added to the shortest-path tree set $S$, Bellman-Ford updates all edges at most $|V| - 1$ times. 
 
-\textbf{Steps:}
+\emph{\textbf{Written Steps:}}
 
 \begin{enumerate}
 
-\item Set $k = 0$, $v_s = 0$, and $v_i = \infty, \forall i \in V \setminus \{s\}$
-\item While $k < |V| - 1$:
-	\begin{enumerate}
-		\item For all $(i,j) \in A$, if $v_j > v_i + c_{ij}$ and $v_i < \infty$, then set $v_j = v_i + c_{ij}$. 
-		\item Set $k = k + 1$. 
-	\end{enumerate}
+\item Set $k = 0$, $v_s = 0$, and $v_i = \infty, \forall i \in V \setminus \{s\}$ \label{Step0}
+\item If  $k < |V| $, then proceed to Step \ref{Step3}. Otherwise,  et $k = k + 1$ and proceed to Step \ref{Step2}. \label{Step1}
+\item For all $(i,j) \in A$, if $\infty > v_j > v_i + c_{ij}$, then set $v_j = v_i + c_{ij}$ and set the parent of $j$ to be $i$. Return to Step \ref{Step1}.  \label{Step2}
+\item Terminate the Bellman-Ford Algorithm with the shortest-path tree corresponding to the parent vector. \label{Step3}
 \end{enumerate}
+
+
+
+\emph{\textbf{Pseudocode:}}
+
+
+\begin{algorithm}
+\caption{Determine a shortest-path tree rooted at source node $s$}
+\begin{algorithmic} 
+\STATE  Set $k = 0$, $v_s = 0$, $v_i = \infty, \forall i \in V \setminus \{s\}$, and $parent(i) = -1, \ \forall i \in V \setminus \{s\}$. 
+\WHILE{$k < |V|$:}
+	\FOR{$(i,j) \in A$}
+		\IF{$\infty > v_j > v_i + c_{ij}$}
+			\STATE Set $v_j = v_i + c_{ij}$.
+			\STATE Set $parent(j) = i$.
+		\ENDIF
+	\ENDFOR
+	\STATE Set $k = k + 1$.
+\ENDWHILE
+\end{algorithmic}
+\end{algorithm}
+
 
  \newpage
 Use the Bellman-Ford Algorithm to determine the shortest path from $s$ to every other node in $V \setminus \{s\}$.
@@ -280,9 +346,12 @@ Use the Bellman-Ford Algorithm to determine the shortest path from $s$ to every 
 
 \vfill
 
+%O(m + n) = O(|V| + |A|)
+
 \item What's the worst-case running time for the Bellman-Ford Algorithm?
 
 \vfill
+%O(mn) = O(|V|*A|)
 \end{itemize}
 
 \end{document}

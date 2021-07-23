@@ -8,6 +8,8 @@
 \usepackage{tikz}
 \usepackage{tikz-3dplot}
 \usepackage{amssymb}
+\usepackage{algorithm}
+\usepackage{algorithmic}
 \usepackage{multicol}
 \usepackage{float}
 \usepackage{calc}
@@ -144,6 +146,7 @@ For the following network, the arc labels refer to the maximum allowable (capaci
 \end{center}
 \vfill
 
+% THE MAXIMUM FLOW IS 25 with 10 units on (1,2), 15 units on (1,3), 15 units on (3,2), 12 units on (2,4), 12 units on (4,5), 13 units on (2,5)
 
 How did you go about determining $f$? How could you make your strategy into an algorithm? 
 
@@ -154,14 +157,14 @@ How did you go about determining $f$? How could you make your strategy into an a
 
 \subsection{Notation}
 
-Given a directed graph $G = (V, A)$, let $c_{uv} \ge 0$ be the capacity on each arc $(u,v) \in A$. For each $(u,v) \in A$, then $(v,u) \notin A$. Determine the maximum amount of flow that can be transmitted from $s$ to $t$ without violating arc capacities or flow conservation among all nodes (incoming flow at each node is equal to the outgoing flow at that node).
+Let $c_{uv} \ge 0$ be the capacity on each arc $(u,v) \in A$. For each $(u,v) \in A$, then $(v,u) \notin A$. Determine the maximum amount of flow that can be transmitted from $s$ to $t$ without violating arc capacities or flow conservation among all nodes (incoming flow at each node is equal to the outgoing flow at that node).
 
 
 \section{Ford-Fulkerson Algorithm}
 
 The Ford-Fulkerson Algorithm is an augmenting-path algorithm that iteratively increases the maximum $s$-$t$ flow $f$ by pushing from $s$ to $t$ on a sequence of arcs having positive residual capacity. A residual graph of a flow network is a graph that indicates additional possible flow given a current set of flows. If there is a path from $s$ to $t$ in the residual network, then additional flow can be sent from $s$ to $t$. Every arc of a residual network has a residual capacity equal to the original capacity of the arc minus the current flow on that arc. 
 
-\textbf{High-level Steps:}
+\emph{\textbf{Written Steps:}}
 
 
 \begin{enumerate}
@@ -174,7 +177,7 @@ The Ford-Fulkerson Algorithm is an augmenting-path algorithm that iteratively in
 
 \end{enumerate}
 
-\textbf{Implementation:}
+\emph{\textbf{Pseudocode:}}
 
 \begin{enumerate}
 	\item Set $f = 0$, $\bar{x}_{ij} = 0, \ \forall (i,j) \in A$, $\bar{c}_{ij} = c_{ij}, \ \forall (i,j) \in A$, and $\bar{c}_{ji} = 0, \ \forall (i,j) \in A$. If $\bar{c}_{ij} > 0$, then $(i,j)$ is found among those arcs $A'$ in the residual network.
