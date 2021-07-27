@@ -33,14 +33,12 @@ for i in Nodes:
 while S != []:
   v = S[0]
   S.remove(v)
-  explored[v] = 1
-  print("node v = ", v)
-  counter = 0
+  print("Node v = ", v)
   for w in Nodes:
     if [v,w] in Edges and explored[w] == 0:
-      S.insert(counter,w)
+      S.append(w)
+      explored[w] = 1
       parent[w] = v
-      counter += 1
 
 print(parent)
 
