@@ -1,0 +1,353 @@
+% LaTeX Article Template
+\documentclass[12pt]{article}
+%% Other packages
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{titlesec}
+\usepackage{soul}
+\usepackage{tikz}
+\usepackage{tikz-3dplot}
+\usepackage{amssymb}
+\usepackage{multicol}
+\usepackage{float}
+\usepackage{calc}
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\usepackage{fancybox}
+\usepackage{array}
+\usepackage[shortlabels]{enumitem}
+\usepackage{framed}
+\usepackage{hyperref}
+\newcolumntype{L}[1]{>{\raggedright\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+\newcolumntype{C}[1]{>{\centering\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+\newcolumntype{R}[1]{>{\raggedleft\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+
+
+%% Margins
+\usepackage{geometry}
+\geometry{verbose,letterpaper,tmargin=1in,bmargin=1in,lmargin=1in,rmargin=1in}
+
+\newcommand{\menuchoice}[2]{{\ttfamily#1..#2}}
+\newcommand{\dotdot}{..}
+
+\usepackage{graphicx}
+
+% Array vertical and horizontal stretch
+% \def\arraystretch{1.5}%  1 is the default, change whatever you need
+% \setlength{\tabcolsep}{12pt}
+
+%\graphicspath{%
+\graphicspath{{./figs/}}
+
+%% Paragraph style settings
+\setlength{\parskip}{\medskipamount}
+\setlength{\parindent}{0pt}
+
+%% Change itemize bullets
+\renewcommand{\labelitemi}{$\bullet$}
+\renewcommand{\labelitemii}{$\circ$}
+\renewcommand{\labelitemiii}{$\diamond$}
+\renewcommand{\labelitemiv}{$\cdot$}
+
+%% Shrink section fonts
+\titleformat*{\section}{\large\bf}
+\titleformat*{\subsection}{\normalsize\it}
+\titleformat*{\subsubsection}{\normalsize\bf}
+
+% %% Compress the spacing around section titles
+\titlespacing*{\section}{0pt}{1.5ex}{0.75ex}
+\titlespacing*{\subsection}{0pt}{1ex}{0.5ex}
+\titlespacing*{\subsubsection}{0pt}{1ex}{0.5ex}
+
+%% amsthm settings
+\theoremstyle{definition}
+\newtheorem{problem}{Problem}
+\newtheorem{example}{Example}
+\newtheorem{mydef}{Definition}
+
+%% Answer box macros
+%% \answerbox{alignment}{width}{height}
+\newcommand{\answerbox}[3]{%
+  \fbox{%
+    \begin{minipage}[#1]{#2}
+      \hfill\vspace{#3}
+    \end{minipage}
+  }
+}
+
+%% \answerboxfull{alignment}{height}
+\newcommand{\answerboxfull}[2]{%
+  \answerbox{#1}{\textwidth}{#2} 
+}
+
+%% \answerboxone{alignment}{height} -- for first-level bullet
+\newcommand{\answerboxone}[2]{%
+  \answerbox{#1}{6.15in}{#2} 
+}
+
+%% \answerboxtwo{alignment}{height} -- for second-level bullet
+\newcommand{\answerboxtwo}[2]{%
+  \answerbox{#1}{5.8in}{#2}
+}
+
+%% \graphbox{xmin}{xmax}{ymin}{ymax}{scale}
+\newcommand{\graphbox}[5]%[-5, 5, -5, 5, 0.33]
+{
+\begin{tikzpicture}
+     [>=latex,scale=#5]
+     
+     % Coordinate axes
+     \draw [->,very thick] (#1, 0) -- (#2, 0) node[right] {$x$};
+     \draw [->,very thick] (0, #3) -- (0, #4) node[above] {$y$};
+     
+     % Grid
+     \draw[step=1cm,thick,dotted] (#1,#3) grid (#2,#4);
+   \end{tikzpicture}
+   }
+
+
+%% Redefine maketitle
+\makeatletter
+\renewcommand{\maketitle}{
+  \noindent SA403 -- Networks \\
+
+  \begin{center}\Large{\textbf{\@title}}\end{center}
+}
+\makeatother
+
+% Set the beginning of a LaTeX document
+\begin{document}
+
+%\graphbox{-10}{3}{-5}{10}
+
+\title{Lesson 3: Algorithms}
+
+%\graphbox[10][10]
+
+\maketitle
+
+
+%\section*{Notes}
+
+Book acknowledgment:
+\begin{itemize}
+	\item[]  ``Introduction to Algorithms" by Cormen, Leiserson, Rivest, and Stein. \emph{Third Edition}
+\end{itemize}
+\section*{Goals}
+\begin{itemize}
+\item Introduce definition, purpose, and outline of algorithms
+\item Study some example algorithms
+\item Provide some preliminary algorithmic analysis
+\end{itemize}
+
+\section{COVID-19 Contact Tracing Example}
+
+Suppose that there is an outbreak of COVID-19 within a small group of the $1^{st}$ company. We want to conduct a contact tracing study to see who needs to quarantine. Consider the following details.
+
+\begin{itemize}
+	\item We know that Professor Curry contracted COVID-19. (I don't have COVID-19. This is just an example.)
+	\item We want to study a small group of ten possible mids that \emph{could} because they are supposed to be traveling on an MO tomorrow. If they are found in the contact tracing tree, then they are unable to go on the MO. Set of students $\{$Jim, Dre, Sean, Connor, Ana, Caroline, Mike, Jayla, Xavier, Ashley$\}$. 
+	\item We know that Jayla, Xavier, and Caroline were all in Prof Curry's office without masks on.
+	\item Jayla, Caroline, and Ana are all roommates.
+	\item Xavier and Mike are roommates.
+	\item Mike, Xavier, and Connor all ate lunch inside together today.
+\end{itemize}
+\newpage
+
+\begin{enumerate}
+	\item Now, who can and cannot go on the MO?
+\vfill
+	\item Try drawing pictures to help you visualize this problem.
+\vfill
+	\item What steps did you take?
+\vfill
+\end{enumerate}
+
+
+\newpage
+
+\section{What is an Algorithm?}
+
+How would you define an algorithm?
+
+\vskip 4cm
+
+
+\textbf{\emph{Definition}}:
+
+An \emph{algorithm} is any well-defined procedure (or set of steps) that takes some \textbf{\emph{(s)}} and produces some \textbf{\emph{output(s)}}. An algorithm is a sequence of steps that transform the input into the output."
+
+\vskip 0.5cm
+
+What algorithms can you think of? 
+
+\vskip 4cm
+
+\newpage
+
+An algorithm can also be viewed as a tool for solving a defined and specific computational problem. The problem statement specifies the desired input/output relationship. The algorithm describes a specific computational procedure for achieving that input/output relationship.
+
+\vskip 0.25cm
+
+\textbf{\emph{Example:}}
+
+Assume that you need to sort a sequence of numbers into non-decreasing order. This is commonly referred to as the Sorting Problem. 
+
+What is the input for this problem?
+\vfill
+What is the output for this problem?
+\vfill
+What is the purpose of an algorithm for solving this problem?
+\vfill
+\newpage
+%Input: A sequence of $n$ numbers $\langle a_1, a_2, \dots, a_n \rangle$.
+
+%Output: A permutation or reordering $\langle a'_1, a'_2, \dots, a'_n \rangle$ of the input sequence such that $a'_1 \le a'_2 \le \dots a'_n$.
+
+
+%In your own words, what is an algorithm?
+%\vskip 3cm
+
+
+What types of problems can be solved using algorithms?
+
+
+\vfill
+%\begin{itemize}
+%	\item Sequencing the human genome
+%	\item Think Facebook...
+%	\item 
+%\end{itemize}
+
+\newpage
+Parts of an algorithm:
+
+\begin{itemize}
+	\item Variables
+	\begin{itemize}
+		\item What values can change?
+	\end{itemize}	
+	\item Parameters
+	\begin{itemize}
+		\item What values must remain the same?
+		\item \emph{These are often the inputs.}
+	\end{itemize}	
+	\item Sequencing
+	\begin{itemize}
+		\item In what order show tasks be performed?
+	\end{itemize}	
+	\item Conditionals
+	\begin{itemize}
+		\item If $X$ occurs, then $Y$ must be performed.
+	\begin{itemize}
+		\item \emph{If}-statements
+		\item \emph{While}-statements
+		\item \emph{Do}-statements
+	\end{itemize}
+	\end{itemize}	
+
+	\item Repetition
+	\begin{itemize}
+		\item When some set of tasks must be repeatedly performed.
+	\end{itemize}
+	\item Subroutines
+	\begin{itemize}
+		\item You can think of these as subtasks. 
+	\end{itemize}
+\end{itemize}
+
+\newpage
+
+
+
+\section{Group Examples}
+
+For the following examples, identify each of the aforementioned parts of an algorithm for solving the problem.
+
+\subsection*{Tying your shoes}
+
+\vskip 4cm
+
+\subsection*{Finding a minimum value among a set of numbers}
+
+
+\vskip 4cm
+
+\subsection*{Service Selection Assignments}
+
+
+\vskip 4cm
+\newpage
+%\section{Algorithm Running Time}
+
+%The \emph{running time} of an algorithm on a particular input is the number of primitive operations or ``steps" executed. Assuming that each computer takes a constant amount of time to execute each line of code.  
+%\vskip 1cm
+%\textbf{Worst-case Running Time:}
+
+
+%The longest running time for \emph{any} input of size \emph{n}. This gives us an upper bound on the running time for any input. By knowing the worst-case running time, we can guarantee that the algorithm will never take any longer. 
+
+\section{Written Steps}
+
+Determine the maximum among values $x, \ y,$ and $z$.
+
+\begin{enumerate}
+
+\item If $x > y$, then proceed to Step \ref{step1} Otherwise, proceed to Step \ref{step2}.
+
+\item If $x > z$, then return $x$ as the maximum value. Otherwise, return $z$ as the maximum value. \label{step1}
+
+\item If $y > z$, then return $y$ as the maximum value. Otherwise, return $z$ as the maximum value. \label{step2}
+\end{enumerate}
+
+\section{Pseudocode}
+
+You can think of pseudocode is a transition between writing out the steps and the code of an algorithm.
+
+\begin{algorithm}
+\caption{Determine maximum among values $x, \ y,$ and $z$}
+\begin{algorithmic} 
+%\REQUIRE $n \geq 0 \vee x \neq 0$
+%\ENSURE $y = x^n$
+%\STATE $y \leftarrow 1$
+\IF{$x > y$}
+	\IF{$x>z$}
+		\STATE Maximum value $= x$.
+	\ELSE
+		\STATE Maximum value $= z$.
+	\ENDIF
+\ELSE
+	\IF{$y>z$}
+		\STATE Maximum value $= y$.
+	\ELSE
+		\STATE Maximum value $= z$.
+	\ENDIF
+\ENDIF
+\end{algorithmic}
+\end{algorithm}
+
+
+\section*{Now, Let's Code This!}
+%\begin{algorithm}
+%\caption{Determine maximum among values $x, \ y,$ and $z$}
+%\begin{algorithmic} 
+%\REQUIRE $n \geq 0 \vee x \neq 0$
+%\ENSURE $y = x^n$
+%\STATE $y \leftarrow 1$
+%\IF{$x > y$}
+%	\IF{$x>z$}
+%		\STATE Maximum value $= x$.
+%	\ELSE
+%		\STATE Maximum value $= z$.
+%	\ENDIF
+%\ELSE
+%	\IF{$y>z$}
+%		\STATE Maximum value $= y$.
+%	\ELSE
+%		\STATE Maximum value $= z$.
+%	\ENDIF
+%\ENDIF
+%\end{algorithmic}
+%\end{algorithm}
+
+\end{document}
