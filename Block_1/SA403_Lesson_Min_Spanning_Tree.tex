@@ -6,6 +6,11 @@
 \usepackage{titlesec}
 \usepackage{soul}
 \usepackage{tikz}
+\usepackage{tikz}
+\usetikzlibrary{calc}
+\usetikzlibrary{arrows}
+
+\usetikzlibrary{backgrounds}
 \usepackage{tikz-3dplot}
 \usepackage{algorithm}
 \usepackage{algorithmic}
@@ -120,23 +125,93 @@
 
 %\graphbox{-10}{3}{-5}{10}
 
-\title{Lesson 5: Minimum Spanning Tree}
+\title{Lesson: Minimum Spanning Tree}
 
 %\graphbox[10][10]
 
 \maketitle
 
 
-\section*{Notes}
+%\section*{Notes}
 
-Book acknowledgment:
+Book acknowledgment: None
 \section*{Goals}
 \begin{itemize}
 \item Minimum Spanning Tree
 \end{itemize}
 
+\section{Gossiping in the Office}
 
-\section{Try it on your own}
+Suppose that Michael Scott has a bit of information that he really wants everyone in the main part of the Office to know. He wants to spread this information in the shortest cumulative cost possible (add up the total cost required for everyone to share it.) Consider the graph below that the depicts the spatial depiction of the Office. Who should share the gossip with whom to minimize the total cost.
+
+\begin{center}
+ \begin{tikzpicture}[every node/.style={circle, fill=green,minimum width=5mm,draw,shading=axis,top color=green, bottom color=green!50!black}]
+
+ \node (a) at (.75,0){Jim};
+ \node (b) at (-1.5,0){Dwight};
+
+ \node (c) at (-4,0){Phyl};
+ \node (d) at (-4.75,-1.5){Andy};
+ \node (e) at (-5.5,0){Stan};
+ \node (f) at (4.5,4) {Ang};
+ \node (g) at (-4,4.75) {Creed};
+ \node (h) at (0,4.75) {Mere};
+ \node (i) at (3,4.75) {Oscar};
+ \node (j) at (4.5,5.5) {Kev};
+ \node (k) at (4.5,0) {Pam};
+ \node (l) at (0.5,-4) {Mike};
+
+
+\begin{scope}[on background layer]
+  \foreach \alpha in {a}%
+  {%
+  \foreach \alphb in {b,k,l}%
+  {%
+   \draw (\alpha) -- (\alphb);%
+  }}
+
+  \foreach \alpha in {b}%
+  {%
+  \foreach \alphb in {h,f,c,j,g}%
+  {%
+   \draw (\alpha) -- (\alphb);%
+  }}
+  \foreach \alpha in {i}%
+  {%
+  \foreach \alphb in {f,j,h,k}%
+  {%
+   \draw (\alpha) -- (\alphb);%
+  }}
+  \foreach \alpha in {k}%
+  {%
+  \foreach \alphb in {f,l,j}%
+  {%
+   \draw (\alpha) -- (\alphb);%
+  }}
+  \foreach \alpha in {g}%
+  {%
+  \foreach \alphb in {h,c,e}%
+  {%
+   \draw (\alpha) -- (\alphb);%
+  }}
+  \foreach \alpha in {d}%
+  {%
+  \foreach \alphb in {l,c,e,b}%
+  {%
+   \draw (\alpha) -- (\alphb);%
+  }}
+  \foreach \alpha in {e}%
+  {%
+  \foreach \alphb in {c}%
+  {%
+   \draw (\alpha) -- (\alphb);%
+  }}
+
+\end{scope}
+ \end{tikzpicture}
+\end{center}
+\newpage
+\section{General Example}
 
 For the network below, find the set of edges that (a) have the minimum cumulative cost and (b) ensure that all nodes are connected. In other words, determine the minimum cumulative weight spanning tree.
 
@@ -200,13 +275,12 @@ Kruskal's Algorithm is a greedy algorithm that chooses the smallest weight edge 
 \end{algorithmic}
 \end{algorithm}
 
-\vfill
 
 How would you sort the edges in $E$ according to their weight? 
 
 \vfill
 
-How would you check to see if adding $(i,j)$ to $T$ would create a cycle?
+How would you check to see if adding $(i,j)$ to $T$ would create a cycle? (\emph{Hint:} Think about the algorithms we have already covered in class.)
 \vfill
 
 \newpage
@@ -223,6 +297,7 @@ For the network below, determine the MST using Kruskal's Algorithm.
 
 Like Kruskal's Algorithm, Prim's Algorithm is a greedy approach. It starts with an empty spanning tree that maintains two sets of nodes. The former set contains the nodes included in the MST, and the latter set contains the nodes not yet included in the MST. At each step, Prim's considers all the edges that connect the two sets, and picks the minimum weight edges from among these edges. After picking the edge, Prim's moves one node from the latter set to the former set. The group of edges that connects the two sets is referred to as a \emph{cut}. 
 
+\vfill
 \emph{\textbf{Written Steps:}}
 
 \begin{enumerate}
@@ -234,6 +309,7 @@ Like Kruskal's Algorithm, Prim's Algorithm is a greedy approach. It starts with 
 		\item Add $v$ to $T$ and set $parent(v) = u$.
 	\end{enumerate}
 
+\vfill
 \emph{\textbf{Pseudocode:}}
 
 
@@ -242,14 +318,15 @@ Like Kruskal's Algorithm, Prim's Algorithm is a greedy approach. It starts with 
 \begin{algorithmic} 
 \STATE Initialize $T = \emptyset$.
 \WHILE{$|T| < |V|$}
-	\STATE Pick edge $(u,v) \in E, \ u \in T,$ and $ v \in V \setminus T$ for which $c_{uv} = \textrm{min}\{c_{iv}: i \in T\}$
+	\STATE Pick edge $(u,v) \in E, \ u \in T,$ and $ v \in V \setminus T$ for which $c_{uv} = \textrm{min}\{c_{ij}: i \in T, \ j \in V\setminus T\}$
 	\STATE Add $v$ to $T$.
 	\STATE Set $parent(v) = u$.
 \ENDWHILE
 \end{algorithmic}
 \end{algorithm}
 
-
+\vfill
+\newpage
 For the network below, determine the MST using Prim's Algorithm.
 
 \begin{center}
@@ -265,10 +342,13 @@ For the network below, determine the MST using Prim's Algorithm.
 \section{Kruskal's vs. Prim's}
 
 \begin{itemize}
-	\item Kruskal's Algorithm tends to run faster in sparse graph, while Prim's Algorithm tends to run faster in dense graphs.
-	\item Prim's starts to build the MST from any node in the graph, while Kruskal's builds a MST from the vertex carruying minimum weight in the graph.
-	\item Kruskal's Algorithm traverses one node only once, while Prim's Algorithm traverse one node more than once time to the get the minimum distance.
+	\item Kruskal's Algorithm tends to run faster in sparse graphs (many nodes with few edges), while Prim's Algorithm tends to run faster in dense graphs (fewer nodes with many edges).
+	\item Prim's starts to build the MST from any node in the graph, while Kruskal's builds a MST from the vertex carrying minimum weight in the graph.
+	\item Kruskal's Algorithm traverses one node only once, while Prim's Algorithm traverse one node more than one time to the get the minimum distance.
 	\item Prim's Algorithm gives connected components and works only on connected graphs, while Kruskal's Algorithm can generate disconnected components.
+	\begin{itemize}
+		\item Think about if we had included Toby, Kelly, and Ryan (from the Annex) in early example. They would form a disconnected component.
+	\end{itemize}	
 	\item Prim's Algorithm runs in $O(V^2)$ time, and Kruskal's Algorithm runs in $O(E \ \textrm{log}(V))$ time.
 \end{itemize}
 

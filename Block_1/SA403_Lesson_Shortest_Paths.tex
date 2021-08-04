@@ -6,6 +6,11 @@
 \usepackage{titlesec}
 \usepackage{soul}
 \usepackage{tikz}
+\usepackage{tikz}
+\usetikzlibrary{calc}
+\usetikzlibrary{arrows}
+
+\usetikzlibrary{backgrounds}
 \usepackage{tikz-3dplot}
 \usepackage{amssymb}
 \usepackage{multicol}
@@ -21,7 +26,6 @@
 \newcolumntype{L}[1]{>{\raggedright\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
 \newcolumntype{C}[1]{>{\centering\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
 \newcolumntype{R}[1]{>{\raggedleft\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
-
 
 %% Margins
 \usepackage{geometry}
@@ -141,35 +145,112 @@ Book acknowledgment:
 \end{itemize}
 
 
+\section*{Example:}
+
+Below is a network representation of some of the buildings on the Yard. 
+\begin{itemize}
+\item HH is Hopper Hall
+\item RH is Rickover Hall
+\item NL is Nimitz Library
+\item MI is Michelson
+\item CH is Chauvenet
+\item S is the middle of Stribling
+\item MS is the Mid-Store
+\item MH is Memorial Hall
+\item Chap is the Chapel
+\end{itemize}
+
+ \begin{tikzpicture}[every node/.style={circle, fill=green,minimum width=5mm,draw,shading=axis,top color=green, bottom color=green!50!black}]
+
+ \node (a) at (0,0){S};
+ \node (b) at (-1.5,4) {MI};
+ \node (c) at (1.5,4) {CH};
+ \node (d) at (4.5,0) {MH};
+ \node (e) at (4.5,4) {MS};
+ \node (f) at (0.5,-4) {Chap};
+ \node (g) at (-4,4) {NL};
+ \node (h) at (-4,6) {HH};
+ \node (i) at (-2.5,6) {RH};
 
 
-\section{Try it on your own}
+\begin{scope}[on background layer]
+  \foreach \alpha in {h}%
+  {%
+  \foreach \alphb in {i,g}%
+  {%
+   \draw (\alpha) -- (\alphb);%
+  }}
 
-Assume that you are starting at node $1$, and the label on each arc is the number of dollars required to use that arc. What's the minimum cost required to move from node $1$ to node $5$ moving from one node to another using the arcs in the network?
+  \foreach \alpha in {b}%
+  {%
+  \foreach \alphb in {a,g,i,c}%
+  {%
+   \draw (\alpha) -- (\alphb);%
+  }}
+  \foreach \alpha in {c}%
+  {%
+  \foreach \alphb in {e,a,d}%
+  {%
+   \draw (\alpha) -- (\alphb);%
+  }}
 
-\begin{center}
-\includegraphics[width=5cm]{shortestpathexample1}
-\end{center}
+  \foreach \alpha in {f}%
+  {%
+  \foreach \alphb in {a,d,g}%
+  {%
+   \draw (\alpha) -- (\alphb);%
+  }}
 
-\begin{enumerate}[a.]
+  \foreach \alpha in {e}%
+  {%
+  \foreach \alphb in {d}%
+  {%
+   \draw (\alpha) -- (\alphb);%
+  }}
+\end{scope}
+ \end{tikzpicture}
 
-\item Determine a shortest path from 1 to 5.
+\begin{enumerate}
+\item[] Label each arc with \emph{about} how long you think it might take to walk from one building to the other.
+\newpage
+\item Search for the shortest path from Hopper Hall to Memorial Hall. About how long will it take?
 \vfill
+\item Search for the shortest path from the Mid-Store to Nimitz. About how long will it take?
+\vfill
+\item What steps did you take to determine these paths? How could you replicate it to determine the shortest path from each node to every other node in the network?
+\vfill
+\end{enumerate}
+
+\newpage
+
+
+\section{More General Example}
+
+%Assume that you are starting at node $1$, and the label on each arc is the number of dollars required to use that arc. What's the minimum cost required to move from node $1$ to node $5$ moving from one node to another using the arcs in the network?
+
+%\begin{center}
+%\includegraphics[width=5cm]{shortestpathexample1}
+%\end{center}
+
+
+%\item Determine a shortest path from 1 to 5.
+%\vfill
 
 %The shortest path is from 1 to 2 to 5, and the total cost is 23 dollars.
 
-\item Determine a shortest path from 1 to every other node.
-\vfill
+%\item Determine a shortest path from 1 to every other node.
+%\vfill
 
 %The 1-2 shortest path is from 1 to 2 with a total cost of 10 dollars.
 %The 1-3 shortest path is from 1 to 3 with a total cost of 15 dollars.
 %The 1-4 shortest path is from 1 to 2 to 4 with a total cost of 22 dollars.
 
-\newpage
+%\newpage
 \begin{center}
 \includegraphics[width=10cm]{shortestpathexample2}
 \end{center}
 
+\begin{enumerate}[a.]
 \item Determine a shortest path from 1 to 8.
 \vfill
 %The shortest path is from 1-3-4-7-8, and the total cost is 26 dollars.
@@ -197,32 +278,33 @@ Assume that you are starting at node $1$, and the label on each arc is the numbe
 \item Let $c_{ij}$ be the cost of traversing arc $(i,j) \in A$.
 \end{itemize}
 
-\textbf{Shortest path problem:} Determine the minimum cumulative cost path from $s$ to $t$.
+\textbf{Shortest path problem:} 
+
+Determine the minimum cumulative cost path from $s$ to $t$.
 
 
 How would you go about solving this on your own? (Given what you already know from previous courses.)
 
 \vfill
 
+\newpage
 \section{Dijkstra's Algorithm}
 
 \begin{itemize}
 	\item Dijkstra's algorithm is very similar to Prim's Algorithm in that we will keep track of which nodes are and are not included in a shortest path from $s$ to $t$, so far.  
-	\item In doing so, we will actually build a shortest-path tree rooted at the source node $s$.
+	\item In doing so, we will actually build a \textbf{shortest-path tree} rooted at the source node $s$.
 	\item At each step of the algorithm, we will search for a node not yet in the shortest-path tree having a minimum distance from the source.
 \end{itemize}
 
 
-\vfill
 
-\newpage
 
 \emph{\textbf{Written Steps:}}
 \begin{enumerate}
-	\item Initialize set $S = \emptyset$ that contains all the nodes currently in the shortest-path tree. Assign a minimum distance value $v_i$ to each node $i \in V$ in the graph. Initialize $v_i = \infty, \ \forall i \in V$, and set $v_s = 0$.  Proceed to Step \ref{Step3}. \label{Step1}
-	\item If $S = V$, then proceed to Step \ref{Step5}. Otherwise, pick a node $u \in V \setminus S$ having a minimum distance value $v_u = \textrm{min} \{v_i: i \in V\setminus S$, add $u$ to $S$, and proceed to Step \ref{Step4}. \label{Step3}
-	\item Update the distance value for each adjacent node of $u$. For all $(u,w) \in A$, if $v_w > v_u + c_{uw}$, then set $v_w = v_u + c_{uw}$ and set the parent of $w$ to be $u$. Return to Step \ref{Step3}. \label{Step4}
-	\item Terminate with the shortest-path tree $S$. \label{Step5}
+	\item Initialize set $S = \emptyset$ that contains all the nodes currently in the shortest-path tree. Assign a minimum distance value $v_i$ to each node $i \in V$ in the graph. Initialize $v_i = \infty, \ \forall i \in V$, and set $v_s = 0$.  Proceed to Step 2.
+	\item If $S = V$, then proceed to Step 4. Otherwise, pick a node $u \in V \setminus S$ having a minimum distance value $v_u = \textrm{min} \{v_i: i \in V\setminus S$, add $u$ to $S$, and proceed to Step 3.
+	\item Update the distance value for each adjacent node of $u$. For all $(u,w) \in A$, if $v_w > v_u + c_{uw}$, then set $v_w = v_u + c_{uw}$ and set the parent of $w$ to be $u$. Return to Step 2. 
+	\item Terminate with the shortest-path tree $S$, distance value vector $v$, and parent vector. 
 \end{enumerate}
 
 
@@ -233,8 +315,7 @@ How would you go about solving this on your own? (Given what you already know fr
 \caption{Determine a shortest-path tree rooted at source node $s$}
 \begin{algorithmic} 
 \STATE Let $S = \emptyset$ be the set of shortest-path tree nodes.
-\STATE Set $v_i = \infty, \ \forall i \in V$
-\STATE Set $v_s = 0$.
+\STATE Set $v_i = \infty, \ \forall i \in V$, set $v_s = 0$, and set $parent(i) = -1, \ \forall i \in V$
 \WHILE{$S \subset V$:}
 	\STATE Pick a node $u \in V \setminus S$ for which $v_u = \textrm{min} \{v_i: i \in V\setminus S\}$.
 	\STATE Add $u$ to $S$.
@@ -277,7 +358,7 @@ Use Dijkstra's Algorithm to solve the two examples from earlier.
 \end{itemize}
 \vfill
  
-Use Dijkstra's Algorithm to determine the shortest path from $s$ to every other node in $V \setminus \{s\}$.
+Use Dijkstra's Algorithm to determine the shortest path from $s$ to $t$.
 
 \begin{center}
 \includegraphics[width=10cm]{shortestpathnegativecycles}
@@ -290,7 +371,7 @@ Use Dijkstra's Algorithm to determine the shortest path from $s$ to every other 
 \section{Bellman-Ford Algorithm}
 
 
-In the worst-case, the Bellman-Ford Algorithm is slightly slower than Dijkstra's Algorithm. Alternatively, it is more versatile because it is capable of handling graphs having negative arc costs. If a graph/network has a negative-cost cycle, then the Bellman-Ford Algorithm is able to detect and report it.
+In the worst-case, the Bellman-Ford Algorithm is slightly slower than Dijkstra's Algorithm. It is more versatile because it is capable of handling graphs having negative arc costs. If a graph/network has a negative-cost cycle, then the Bellman-Ford Algorithm is able to detect and report it.
 
 Like Dijkstra's Algorithm, the Bellman-Ford iteratively updates approximations to the minimum computed distance to each node in the network. Whereas Dijkstra's uses a greedy approach that selects the \emph{closest} node that has not yet been added to the shortest-path tree set $S$, Bellman-Ford updates all edges at most $|V| - 1$ times. 
 
@@ -299,7 +380,7 @@ Like Dijkstra's Algorithm, the Bellman-Ford iteratively updates approximations t
 \begin{enumerate}
 
 \item Set $k = 0$, $v_s = 0$, and $v_i = \infty, \forall i \in V \setminus \{s\}$ \label{Step0}
-\item If  $k < |V| $, then proceed to Step \ref{Step3}. Otherwise,  et $k = k + 1$ and proceed to Step \ref{Step2}. \label{Step1}
+\item If  $k > |V| $, then proceed to Step \ref{Step3}. Otherwise, set $k = k + 1$ and proceed to Step \ref{Step2}. \label{Step1}
 \item For all $(i,j) \in A$, if $\infty > v_j > v_i + c_{ij}$, then set $v_j = v_i + c_{ij}$ and set the parent of $j$ to be $i$. Return to Step \ref{Step1}.  \label{Step2}
 \item Terminate the Bellman-Ford Algorithm with the shortest-path tree corresponding to the parent vector. \label{Step3}
 \end{enumerate}
@@ -338,6 +419,9 @@ Use the Bellman-Ford Algorithm to determine the shortest path from $s$ to every 
 
 \newpage
 
+\section{Now, let's code!!}
+
+\end{document}
 \section{Running Time Analysis}
 
 \begin{itemize}
@@ -354,4 +438,3 @@ Use the Bellman-Ford Algorithm to determine the shortest path from $s$ to every 
 %O(mn) = O(|V|*A|)
 \end{itemize}
 
-\end{document}
